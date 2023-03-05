@@ -23,7 +23,9 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Ajouter une ligne</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          Ajouter une ligne
+        </h1>
         <button
           type="button"
           class="btn-close"
@@ -34,31 +36,20 @@
       <div class="modal-body">
         <form method="post" action="/result">
           <div class="mb-3">
-            <label for="rnaId" class="form-label"
-              >Rna ID</label
-            >
-            <input
-              type="text"
-              class="form-control"
-              id="rnaId"
-              name="rnaId"
-            />
+            <label for="rnaId" class="form-label">Rna ID</label>
+            <input type="text" class="form-control" id="rnaId" name="rnaId" />
           </div>
           <div class="mb-3">
-            <label for="rnaIdEx" class="form-label"
-              >Rna Id Ex</label
-            >
+            <label for="rnaIdEx" class="form-label">Rna Id Ex</label>
             <input
               type="text"
               class="form-control"
               id="rnaIdEx"
               name="rnaIdEx"
-
             />
-          </div><div class="mb-3">
-            <label for="gestion" class="form-label"
-              >Gestion</label
-            >
+          </div>
+          <div class="mb-3">
+            <label for="gestion" class="form-label">Gestion</label>
             <input
               type="text"
               class="form-control"
@@ -96,10 +87,17 @@
     {% for data in datas %}
     <tr>
       <th scope="row">{{ data.id }}</th>
-      <td>{{ data.rna_id }}</td>
+      <td name="id">{{ data.rna_id }}</td>
       <td>{{ data.rna_id_ex }}</td>
       <td>{{ data.gestion }}</td>
-      <td><button class="btn btn-primary">Modifier</button></td>
+      <td>
+          <button class="btn btn-secondary">Modifier</button>
+        <form action="/delete" method="post">
+          <button name="rnaIdDel" value={{data.id}} type="submit" class="btn btn-danger">
+            Supprimer
+          </button>
+        </form>
+      </td>
     </tr>
     {% endfor %}
   </tbody>

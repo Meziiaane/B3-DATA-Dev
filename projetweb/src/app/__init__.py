@@ -1,7 +1,11 @@
-from flask import Flask, render_template
+import sys
+from flask import Flask, render_template,request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select
 import os
+
+import cgi
+import mysql.connector
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
@@ -10,7 +14,6 @@ db = SQLAlchemy(app)
 
 class Data(db.Model):
   __tablename__ = "data"
-
   id        = db.Column(db.Integer, primary_key=True)
   rna_id    = db.Column(db.String(20), nullable=True)
   rna_id_ex = db.Column(db.String(20), nullable=True)
@@ -26,7 +29,7 @@ def about():
 
 @app.route('/assos')
 def assos():
-  datas = Data.query.limit(10).all()
+  datas = Data.query.all()
   #for data in datas:
   #  print(f"{data.rna_id}")
   
@@ -36,6 +39,31 @@ def assos():
   #  print(f"{data.rna_id}")
 
   return render_template('assos.html', datas=datas)
+@app.route('/result', methods=["POST","GET"])
+
+def result():
+  link = mysql.connector.connect(
+    host='mysql',
+    database = 'rna',
+    user='root',
+    password =""
+  )
+  cur = link.cursor()
+
+  form = cgi.FieldStorage()
+  rnaId = request.form.get("rnaId")
+  rnaIdEx = request.form.get("rnaIdEx")
+  gestion = request.form.get("gestion")
+# Ajout d'une ligne à une table
+  add_line = "INSERT INTO data (rna_id, rna_id_ex, gestion) VALUES (%s, %s, %s)"
+  cur.execute(add_line, (rnaId, rnaIdEx, gestion))
+  link.commit()
+  # Fermeture de la connexion
+  cur.close()
+  link.close()
+  return redirect("/assos")
+
+
 
 @app.route('/hello')
 @app.route('/hello/<name>')
